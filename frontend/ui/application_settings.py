@@ -644,8 +644,8 @@ def show_change_otp_settings_verification_screen(app):
 
 # --------------- Manage Files ------------------------
 def show_manage_files_screen(app):
-    """Displays the Manage Files screen (upload, view, delete) using per-user storage."""
-    import os, sys
+    """Displays the Manage Files screen (upload + unlock only) using per-user storage."""
+    import os, sys, subprocess
     import tkinter as tk
     import tkinter.font as tkFont
     from tkinter import filedialog as fd, messagebox
@@ -654,6 +654,13 @@ def show_manage_files_screen(app):
     backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../backend"))
     if backend_dir not in sys.path:
         sys.path.insert(0, backend_dir)
+
+    # ---------- compact fonts (local, smaller than app defaults) ----------
+    f_title   = tkFont.Font(family="Poppins", size=16, weight="bold")
+    f_label   = tkFont.Font(family="Poppins", size=10)
+    f_button  = tkFont.Font(family="Poppins", size=9)
+    f_detail  = tkFont.Font(family="Poppins", size=9)
+    f_list    = tkFont.Font(family="Poppins", size=11)    
 
     try:
         from locked_files_store import (
@@ -666,7 +673,7 @@ def show_manage_files_screen(app):
         for w in app.content_frame.winfo_children():
             w.destroy()
         tk.Label(app.content_frame, text=f"Cannot import locked_files_store: {e}",
-                 font=("Poppins", 11), fg="red", bg="#AD567C").pack(pady=20)
+                 font=("Poppins", 11), fg="#FF4D4D", bg="#AD567C").pack(pady=20)
         return
 
     LIGHT_CARD_BG = "#AD567C"
@@ -695,17 +702,17 @@ def show_manage_files_screen(app):
 
     # --- If not logged in ---
     if not username:
-        card = tk.Frame(app.content_frame, width=720, height=260, bg=LIGHT_CARD_BG)
+        card = tk.Frame(app.content_frame, width=600, height=300, bg=LIGHT_CARD_BG)
         card.pack(pady=28); card.pack_propagate(False)
-        tk.Label(card, text="Manage Files", font=font_title, fg="white", bg=LIGHT_CARD_BG)\
+        tk.Label(card, text="Manage Files", font=f_title, fg="white", bg=LIGHT_CARD_BG)\
             .pack(anchor="w", padx=40, pady=(20, 6))
-        tk.Label(card, text="Please log in to upload, view, or delete locked files.",
-                 font=font_subtitle, fg="white", bg=LIGHT_CARD_BG)\
+        tk.Label(card, text="Please log in to upload (lock) or unlock files.",
+                 font=f_detail, fg="white", bg=LIGHT_CARD_BG)\
             .pack(anchor="w", padx=40, pady=(0, 10))
         return
 
     # --- Card (centered) ---
-    card = tk.Frame(app.content_frame, width=720, height=480, bg=LIGHT_CARD_BG)
+    card = tk.Frame(app.content_frame, width=700, height=390, bg=LIGHT_CARD_BG)
     card.pack(expand=True)
     card.pack_propagate(False)
 
@@ -721,36 +728,63 @@ def show_manage_files_screen(app):
         command=lambda: app.show_applications_screen()
     ).pack(side="left")
 
-    tk.Label(
-        top_bar, text="Manage Files", font=font_title, fg="white", bg=LIGHT_CARD_BG
-    ).pack(side="left", padx=(10, 0))
+    tk.Label(top_bar, text="Manage Files", font=f_title, fg="white", bg=LIGHT_CARD_BG)\
+        .pack(side="left", padx=(10, 0))
 
     # --- Subtitle ---
     tk.Label(
         card,
-        text="Secure Your Files.",
-        font=font_subtitle, fg="white", bg=LIGHT_CARD_BG
+        text="Lock files into your secure storage or unlock (move back to Downloads).",
+        font=f_detail, fg="white", bg=LIGHT_CARD_BG
     ).pack(anchor="w", padx=50, pady=(0, 12))
 
-    # --- Listbox (centered) ---
+    # # --- Listbox (centered) ---
+    # list_wrap = tk.Frame(card, bg=LIGHT_CARD_BG)
+    # list_wrap.pack(padx=50, pady=(0, 10), fill="both", expand=True)
+
+    # file_listbox = tk.Listbox(
+    #     list_wrap, font=font_list, selectmode="extended", height=10,
+    #     activestyle="none"
+    # )
+    # file_listbox.pack(side="left", fill="both", expand=True)
+
+    # scrollbar = tk.Scrollbar(list_wrap, orient="vertical", command=file_listbox.yview)
+    # scrollbar.pack(side="right", fill="y")
+    # file_listbox.config(yscrollcommand=scrollbar.set)
+
+    # # --- Empty state label ---
+    # empty_state = tk.Label(
+    #     list_wrap,
+    #     text="No locked files yet.\nClick ‘Lock’ to add.",
+    #     font=font_subtitle, fg="white", bg=LIGHT_CARD_BG, justify="center"
+    # )
+
+    # --- List area (sits near the top when empty) ---
     list_wrap = tk.Frame(card, bg=LIGHT_CARD_BG)
-    list_wrap.pack(padx=50, pady=(0, 10), fill="both", expand=True)
+    # NOTE: we will reconfigure expand/fill depending on empty/non-empty
+    list_wrap.pack(padx=50, pady=(0, 10), fill="both", expand=False)
 
+    # White box container (fixed height so it sits neatly under the title when empty)
+    box = tk.Frame(list_wrap, bg="#FFFFFF", relief="solid", height=180)
+    box.pack(side="left", fill="both", expand=True)
+    box.pack_propagate(False)
+
+    # Actual listbox (hidden when empty)
     file_listbox = tk.Listbox(
-        list_wrap, font=font_list, selectmode="extended", height=10,
-        activestyle="none"
+        box, font=f_list, selectmode="extended", activestyle="none",
+        bd=0, highlightthickness=0, bg="#FFFFFF"
     )
-    file_listbox.pack(side="left", fill="both", expand=True)
-
+    # Scrollbar (shown only when we have items)
     scrollbar = tk.Scrollbar(list_wrap, orient="vertical", command=file_listbox.yview)
-    scrollbar.pack(side="right", fill="y")
+
     file_listbox.config(yscrollcommand=scrollbar.set)
 
-    # --- Empty state label ---
-    empty_state = tk.Label(
-        list_wrap,
-        text="No locked files yet.\nClick ‘Upload File’ to add.",
-        font=font_subtitle, fg="white", bg=LIGHT_CARD_BG, justify="center"
+    # Placeholder label shown INSIDE the white box when empty
+    placeholder = tk.Label(
+        box,
+        text="No locked files yet.\nClick 'Lock' to add.",
+        font=f_label, fg="#666666", bg="#FFFFFF",
+        justify="center"
     )
 
     # --- Bottom info line (messages) ---
@@ -758,7 +792,7 @@ def show_manage_files_screen(app):
     msg_lbl = tk.Label(card, textvariable=msg_var, font=font_small, fg="white", bg=LIGHT_CARD_BG)
     msg_lbl.pack(anchor="w", padx=50, pady=(4, 0))
 
-    def _set_msg(text, color="white"):
+    def _set_msg(text, color="#FFFFFF"):
         msg_var.set(text)
         msg_lbl.config(fg=color)
 
@@ -767,30 +801,53 @@ def show_manage_files_screen(app):
         try:
             return load_locked_files(username) or []
         except Exception as e:
-            _set_msg(f"Error loading files: {e}", "red")
+            _set_msg(f"Error loading files: {e}", "#FF4D4D")
             return []
 
+    # --- Layout toggling depending on empty/non-empty ---
+    def _toggle_empty(is_empty: bool):
+        if is_empty:
+            # Put the white box near the top and show placeholder inside it
+            list_wrap.pack_configure(fill="x", expand=False)
+            # Hide listbox + scrollbar, show placeholder
+            try:
+                file_listbox.pack_forget()
+            except Exception:
+                pass
+            try:
+                scrollbar.pack_forget()
+            except Exception:
+                pass
+            placeholder.pack(expand=True, fill="both")
+        else:
+            # Allow the list area to expand and show listbox + scrollbar
+            list_wrap.pack_configure(fill="both", expand=True)
+            placeholder.pack_forget()
+            file_listbox.pack(side="left", fill="both", expand=True)
+            scrollbar.pack(side="right", fill="y")
+
+    # --- Render list ---
     def _refresh_list():
         app.managed_files = _load_items()
         file_listbox.delete(0, tk.END)
         for it in app.managed_files:
             name = it.get("name") or os.path.basename(it.get("stored_path") or it.get("path") or "")
             file_listbox.insert(tk.END, name or "(unnamed)")
-        # Empty state toggle
-        if len(app.managed_files) == 0:
-            empty_state.pack(expand=True)
-        else:
-            empty_state.pack_forget()
-        # Count
         n = len(app.managed_files)
+        _toggle_empty(n == 0)
         if n == 0:
             _set_msg("No files yet.")
         elif n == 1:
-            _set_msg("1 file uploaded.")
+            _set_msg("1 file locked.")
         else:
-            _set_msg(f"{n} files uploaded.")
+            _set_msg(f"{n} files locked.")
 
     # --- Actions ---
+    def _selected_indices():
+        sel = list(file_listbox.curselection())
+        sel.sort()
+        return sel
+
     def on_upload():
         # Allow selecting multiple files, move each into the user's folder.
         paths = fd.askopenfilenames(title="Select file(s) to lock")
@@ -811,51 +868,44 @@ def show_manage_files_screen(app):
                 added += 1
             except Exception as e:
                 errors += 1
-                _set_msg(f"Failed to add: {os.path.basename(p)} ({e})", "red")
+                _set_msg(f"Failed to lock: {os.path.basename(p)} ({e})", "#FF4D4D")
 
         if added:
             _refresh_list()
         if errors == 0 and added:
             _set_msg(f"Locked {added} file(s).")
         elif errors:
-            _set_msg(f"Locked {added}, {errors} failed.", "orange")
+            _set_msg(f"Locked {added}, {errors} failed.", "#FFC107")
 
-    def _selected_indices():
-        sel = list(file_listbox.curselection())
-        sel.sort()
-        return sel
+    def _open_path(path: str):
+        try:
+            if sys.platform.startswith("win"):
+                os.startfile(path)  # type: ignore[attr-defined]
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", path])
+            else:
+                subprocess.Popen(["xdg-open", path])
+        except Exception as e:
+            messagebox.showerror("Open File", f"Can't open file:\n{e}")
 
     def on_open():
         idxs = _selected_indices()
-        if not idxs:
-            messagebox.showinfo("Open File", "Select a file to open.")
+        if len(idxs) != 1:
+            messagebox.showinfo("Open File", "Select exactly one file to open.")
             return
-        # Open each selected file
-        for i in idxs:
-            if not (0 <= i < len(app.managed_files)):
-                continue
-            meta = app.managed_files[i]
-            path = meta.get("stored_path") or meta.get("path")  # legacy-safe
-            if path and os.path.isfile(path):
-                try:
-                    # Windows
-                    os.startfile(path)
-                except AttributeError:
-                    # macOS / Linux
-                    import subprocess, sys as _sys
-                    if _sys.platform.startswith("darwin"):
-                        subprocess.run(["open", path])
-                    else:
-                        subprocess.run(["xdg-open", path])
-            else:
-                messagebox.showerror("Missing File", f"File not found on disk:\n{path}")
+        item = app.managed_files[idxs[0]]
+        path = item.get("stored_path") or item.get("path")
+        if not path or not os.path.exists(path):
+            messagebox.showerror("Open File", "File not found. Try unlocking first.")
+            return
+        _open_path(path)
 
     def on_delete():
         idxs = _selected_indices()
         if not idxs:
             messagebox.showinfo("Unlock File", "Select file(s) to unlock.")
             return
-        if not messagebox.askyesno("Confirm Unlock", f"Unlock {len(idxs)} selected file(s)?."):
+        if not messagebox.askyesno("Confirm Unlock", f"Unlock {len(idxs)} selected file(s)?"):
             return
 
         # Delete from the highest index down to keep indices stable
@@ -866,13 +916,13 @@ def show_manage_files_screen(app):
                 if removed:
                     deleted += 1
             except Exception as e:
-                _set_msg(f"Delete failed at index {i}: {e}", "red")
+                _set_msg(f"Unlock failed at index {i}: {e}", "#FF4D4D")
 
         if deleted:
             _refresh_list()
-            _set_msg(f"Unlock {deleted} file(s).")
+            _set_msg(f"Unlocked {deleted} file(s).")
 
-    # --- Buttons row ---
+    # --- Buttons row (only Lock & Unlock) ---
     btns = tk.Frame(card, bg=LIGHT_CARD_BG)
     btns.pack(fill="x", padx=50, pady=(6, 12))
 
@@ -883,23 +933,16 @@ def show_manage_files_screen(app):
     ).pack(side="left")
 
     tk.Button(
-        btns, text="Open", font=font_button,
-        bg="#F5F5F5", fg="black", relief="flat", padx=12, pady=6,
-        command=on_open
-    ).pack(side="left", padx=(10, 0))
-
-    tk.Button(
         btns, text="Unlock", font=font_button,
         bg="#F5F5F5", fg="black", relief="flat", padx=12, pady=6,
         command=on_delete
     ).pack(side="left", padx=(10, 0))
 
     tk.Button(
-        btns, text="Refresh", font=font_button,
+        btns, text="Open", font=f_button,
         bg="#F5F5F5", fg="black", relief="flat", padx=12, pady=6,
-        command=_refresh_list
-    ).pack(side="right")
+        command=on_open
+    ).pack(side="left", padx=(10, 0))
 
     # --- Initial render ---
     _refresh_list()
-

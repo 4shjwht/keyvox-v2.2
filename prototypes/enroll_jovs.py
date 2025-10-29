@@ -70,7 +70,7 @@ def enroll_user(username: str) -> bool:
         # UPDATED PHRASE (display only)
         prompt_msg = (
             f"-----------------------------------------------\n\n"
-            f"“My voice is my password; please grant access to my account.”"
+            f"My voice is my password; please grant access to my account."
             f"\n\n-----------------------------------------------\n\n"
             f"Press 'OK' to begin recording."
         )
@@ -79,7 +79,7 @@ def enroll_user(username: str) -> bool:
         recording = record_audio(
             duration=DURATION,
             # UPDATED PHRASE (recording prompt)
-            prompt=f"“My voice is my password; Please grant access\n\tto my account.”\n\n Please say the phrase clearly for {DURATION} seconds.",
+            prompt=f"My voice is my password; Please grant access to my account.”\n\n Please say the phrase clearly for {DURATION} seconds.",
             gui_mode=True
         )
 

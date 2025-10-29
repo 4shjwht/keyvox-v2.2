@@ -130,5 +130,11 @@
         "email": "lolforsalejc@gmail.com",
         "password_hash": "1cccbbd7107b2e556e8763645a4e9c2773e353f1d75417bf222729bba07c26ba",
         "voiceprint_path": null
+    },
+    "jewelh": {
+        "full_name": "ashley jewel heart",
+        "email": "ashjewelh@gmail.com",
+        "password_hash": "e74a49911a9098fd7fc1686bce0d2431f84d476fd3fe1bdab0a2f6b63d52bf00",
+        "voiceprint_path": null
     }
 }

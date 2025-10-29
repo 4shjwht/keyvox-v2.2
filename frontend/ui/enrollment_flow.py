@@ -320,7 +320,7 @@ def show_enrollment_step2(app):
 
     tk.Label(card, text="STEP 2: Voice Authentication", font=font_title, fg="white", bg=LIGHT_CARD_BG)\
         .pack(anchor="w", pady=(20, 5), padx=40)
-    tk.Label(card, text="Record your voice for added security.\nYou will record 5 phrases to create your voiceprint.",
+    tk.Label(card, text="Record your voice for added security.\nYou will record a phrase to create your voiceprint.",
              font=font_subtitle, fg="white", bg=LIGHT_CARD_BG, justify="left", wraplength=600)\
         .pack(anchor="w", pady=(0, 25), padx=40)
 
