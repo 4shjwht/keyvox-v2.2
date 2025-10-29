@@ -946,3 +946,4 @@ def show_manage_files_screen(app):
 
     # --- Initial render ---
     _refresh_list()
+

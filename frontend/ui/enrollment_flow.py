@@ -112,7 +112,7 @@ def show_enrollment_status(app):
 
     deactivate_button = tk.Button(
         card,
-        text="Deactivate Account",
+        text="Back to Home",
         font=font_button,
         bg=COLOR_DANGER,
         fg=COLOR_LABEL,
@@ -123,37 +123,37 @@ def show_enrollment_status(app):
         activeforeground=COLOR_TEXT,
         pady=8,
         padx=15,
-        command=on_deactivate
+        command=lambda: app.show_home_screen()
     )
     deactivate_button.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(40, 0))
 
 
-def _deactivate_current_user(app):
-    """
-    Stub: Confirmation + 'Not Implemented' notice.
-    No changes to users.json, no logout, no navigation.
-    Replace later with real logic when you're ready.
-    """
-    from tkinter import messagebox
+# def _deactivate_current_user(app):
+#     """
+#     Stub: Confirmation + 'Not Implemented' notice.
+#     No changes to users.json, no logout, no navigation.
+#     Replace later with real logic when you're ready.
+#     """
+#     from tkinter import messagebox
 
-    user = getattr(app, "currently_logged_in_user", None)
-    who = ""
-    if isinstance(user, dict):
-        who = user.get("full_name") or user.get("username") or user.get("email") or ""
-        who = f" ({who})" if who else ""
+#     user = getattr(app, "currently_logged_in_user", None)
+#     who = ""
+#     if isinstance(user, dict):
+#         who = user.get("full_name") or user.get("username") or user.get("email") or ""
+#         who = f" ({who})" if who else ""
 
-    proceed = messagebox.askyesno(
-        "Confirm Deactivation",
-        f"Are you sure you want to deactivate your account{who}?\n\n"
-        "Note: Deactivation isn't available yet."
-    )
-    if not proceed:
-        return
+#     proceed = messagebox.askyesno(
+#         "Confirm Deactivation",
+#         f"Are you sure you want to deactivate your account{who}?\n\n"
+#         "Note: Deactivation isn't available yet."
+#     )
+#     if not proceed:
+#         return
 
-    messagebox.showinfo(
-        "Not Implemented",
-        "Deactivation is not available yet. No changes were made."
-    )
+#     messagebox.showinfo(
+#         "Not Implemented",
+#         "Deactivation is not available yet. No changes were made."
+#     )
 
 def show_enrollment_step1(app):
     """STEP 1: Account setup."""

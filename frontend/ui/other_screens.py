@@ -122,14 +122,21 @@ from backend.locked_files_store import load_locked_files
 def show_applications_screen(app):
     """Shows the application management screen for a logged-in user with modern card + rounded button style."""
     import tkinter as tk
-
+    import tkinter.font as tkFont
+    
     ui_helpers.update_nav_selection(app, "applications")
     LIGHT_CARD_BG = "#AD567C"
 
-    # --- Main card ---
-    card = ui_helpers.create_main_card(app, width=820, height=440)
-    card.config(bg=LIGHT_CARD_BG, bd=0, highlightthickness=0)
-    card.pack(expand=True, fill="both")
+    # ---------- page container (not full-width) ----------
+    outer = ui_helpers.create_main_card(app, width=700, height=390)
+    outer.config(bg=LIGHT_CARD_BG, bd=0, highlightthickness=0)
+    outer.pack(expand=True)  # no fill="both" → avoids spanning entire app
+
+    # ---------- compact fonts (local, smaller than app defaults) ----------
+    f_title   = tkFont.Font(family="Poppins", size=16, weight="bold")
+    f_label   = tkFont.Font(family="Poppins", size=10)
+    f_button  = tkFont.Font(family="Poppins", size=9)
+    f_detail  = tkFont.Font(family="Poppins", size=9)
 
     # If not logged in
     if not app.currently_logged_in_user:
@@ -150,125 +157,114 @@ def show_applications_screen(app):
 
     # Title
     tk.Label(
-        card,
-        text="Manage Applications",
-        font=app.font_large,
-        fg=config.TEXT_COLOR,
-        bg=LIGHT_CARD_BG
-    ).pack(pady=(16, 6))
+        outer, text="Manage Applications",
+        font=f_title, fg=config.TEXT_COLOR, bg=LIGHT_CARD_BG
+    ).pack(pady=(18, 10), anchor="center")  # centered title ✅
 
-    # === Cards row (uses GRID for perfect columns) ===
-    # Outer padding for the card area
-    cards_frame = tk.Frame(card, bg=LIGHT_CARD_BG)
-    cards_frame.pack(fill="x", padx=24, pady=(6, 18))
+    # thin divider (shorter than full width)
+    div_wrap = tk.Frame(outer, bg=LIGHT_CARD_BG)
+    div_wrap.pack(pady=(8, 14))
+    tk.Frame(div_wrap, bg="#ffffff", height=1, width=600).pack()  # fixed width line
 
-    # Grid config: 4 equal columns with a uniform name for equal sizing
-    for col in range(4):
-        cards_frame.grid_columnconfigure(col, weight=1, uniform="cards")
-
-    # Tidy vertical padding in the row
-    cards_frame.grid_rowconfigure(0, weight=1)
-
-    # ---- Card builder (fixed size; internal grid keeps button at bottom) ----
-    CARD_MIN_W = 170
-    CARD_MIN_H = 250
-    ICON_AREA_H = 60
-
-    def _create_app_card(parent, col, icon, title, details, button_text, button_command):
-        c = tk.Frame(parent, bg=config.CARD_BG_COLOR, bd=0, relief="flat")
-        c.grid(row=0, column=col, padx=12, pady=8, sticky="nsew")  # even gutters
-        c.update_idletasks()  # ensure geometry exists
-        c.grid_propagate(False)  # we’ll control size via minsize below
-
-        # Give each column a min size so all cards match width/height
-        parent.grid_columnconfigure(col, minsize=CARD_MIN_W)
-
-        # Internal grid: icon / title / details (expand) / button (bottom)
-        c.grid_rowconfigure(0, minsize=ICON_AREA_H)
-        c.grid_rowconfigure(1, minsize=26)
-        c.grid_rowconfigure(2, weight=1, minsize=80)
-        c.grid_rowconfigure(3, minsize=44)
-        c.grid_columnconfigure(0, weight=1)
-
-        # Icon (centered, consistent height)
-        icon_wrap = tk.Frame(c, bg=config.CARD_BG_COLOR, height=ICON_AREA_H)
-        icon_wrap.grid(row=0, column=0, sticky="nsew", pady=(12, 4))
-        icon_wrap.pack_propagate(False)
-        tk.Label(icon_wrap, image=icon, bg=config.CARD_BG_COLOR).pack(expand=True)
-
-        # Title
-        tk.Label(
-            c, text=title, font=app.font_medium_bold,
-            fg=config.TEXT_COLOR, bg=config.CARD_BG_COLOR
-        ).grid(row=1, column=0, sticky="n", pady=(0, 2))
-
-        # Details (fills remaining space so buttons align across cards)
-        details_box = tk.Frame(c, bg=config.CARD_BG_COLOR)
-        details_box.grid(row=2, column=0, sticky="nsew", padx=10)
-        for line in details:
-            tk.Label(
-                details_box, text=line, font=app.font_normal,
-                fg=config.TEXT_COLOR, bg=config.CARD_BG_COLOR,
-                wraplength=CARD_MIN_W - 24, justify="center"
-            ).pack(pady=2)
-
-        # Button (pinned to bottom)
-        tk.Button(
-            c, text=button_text, command=button_command,
-            font=app.font_small, relief="flat",
-            bg=config.BUTTON_LIGHT_COLOR, fg=config.BUTTON_LIGHT_TEXT_COLOR,
-            padx=10, pady=6
-        ).grid(row=3, column=0, pady=(6, 12))
-
-        # Enforce overall min height for each card
-        c.update_idletasks()
-        c.configure(height=max(CARD_MIN_H, c.winfo_height()))
-
-        return c
-
-    # Data
+    user = app.currently_logged_in_user
     voice_status = "Enrolled" if user.get('voiceprint_path') else "Not Enrolled"
     masked_email = app._mask_email(user.get('email', ''))
 
-    # Password Card
-    _create_app_card(
-        cards_frame, 
-        0, 
-        app.key_img, 
-        "Password", 
-        ["********"],
-        "Edit Password", 
-        app.show_change_password_screen)
+    # ---------- inner content (fixed width, centered) ----------
+    content = tk.Frame(outer, bg=LIGHT_CARD_BG, width=720, height=320)
+    content.pack(padx=8, pady=(10, 8))
+    content.pack_propagate(False)
 
-    # Voice Biometrics Card
-    _create_app_card(
-        cards_frame, 
-        1, 
-        app.mic_img, 
-        "Voice Biometrics", 
-        [f"Status: {voice_status}"],
-        "Edit Biometrics", app.show_password_screen_voice_entry1)
+    # grid: 4 equal columns, compact gutters
+    for c in range(4):
+        content.grid_columnconfigure(c, weight=1, uniform="cards", minsize=170)
+    content.grid_rowconfigure(0, weight=1)
 
-    # OTP Settings Card
-    _create_app_card(
-        cards_frame, 
-        2, app.otp_img, 
-        "OTP Settings", 
-        ["Account:", masked_email],
-        "Edit Email", 
-        app.show_change_otp_settings_screen)
+    # ---------- icon helper: show smaller icons without changing originals ----------
+    def _small_icon(img):
+        try:
+            # Tk PhotoImage supports subsample; guard in case of PIL ImageTk
+            return img.subsample(2, 2)
+        except Exception:
+            return img  # fallback
 
-    # File Manager Card
-    file_status_lines = _files_status_lines(app)
-    _create_app_card(
-        cards_frame, 
-        3,
-        getattr(app, "files_img", getattr(app, "folder_img", app.key_img)),
-        "File Manager",
-        file_status_lines,                 # <-- use the dynamic status line
-        "Manage Files",
-        getattr(app, "show_file_settings_screen", app.show_manage_files_screen)
-    )
+    key_icon   = _small_icon(getattr(app, "key_img", app.logo_img))
+    mic_icon   = _small_icon(getattr(app, "mic_img", app.logo_img))
+    otp_icon   = _small_icon(getattr(app, "otp_img", app.logo_img))
+    files_icon = _small_icon(getattr(app, "files_img", getattr(app, "folder_img", app.logo_img)))
+
+    # ---------- card factory (compact) ----------
+    CARD_W, CARD_H = 170, 230
+    ICON_H         = 44
+    PAD            = 10
+
+    def _card(parent, col, icon, title, lines, btn_text, btn_cmd):
+        c = tk.Frame(parent, bg=config.CARD_BG_COLOR, bd=0, relief="flat",
+                     width=CARD_W, height=CARD_H)
+        c.grid(row=0, column=col, padx=8, pady=6, sticky="nsew")
+        c.grid_propagate(False)
+
+        # rows: icon / title / details (expand) / button
+        c.grid_rowconfigure(0, minsize=ICON_H)
+        c.grid_rowconfigure(1, minsize=22)
+        c.grid_rowconfigure(2, weight=1)
+        c.grid_rowconfigure(3, minsize=40)
+        c.grid_columnconfigure(0, weight=1)
+
+        # icon
+        icon_wrap = tk.Frame(c, bg=config.CARD_BG_COLOR)
+        icon_wrap.grid(row=0, column=0, sticky="nsew", pady=(PAD, 2))
+        tk.Label(icon_wrap, image=icon, bg=config.CARD_BG_COLOR).pack()
+
+        # title
+        tk.Label(c, text=title, font=f_label, fg=config.TEXT_COLOR,
+                 bg=config.CARD_BG_COLOR).grid(row=1, column=0, pady=(0, 2))
+
+        # details
+        box = tk.Frame(c, bg=config.CARD_BG_COLOR)
+        box.grid(row=2, column=0, sticky="nsew", padx=PAD, pady=(0, 4))
+        for t in lines:
+            tk.Label(box, text=t, font=f_detail, fg=config.TEXT_COLOR,
+                     bg=config.CARD_BG_COLOR, wraplength=CARD_W - PAD*2,
+                     justify="center").pack(pady=1)
+
+        # button (smaller font/padding)
+        tk.Button(
+            c, text=btn_text, command=btn_cmd, font=f_button,
+            relief="flat", bg=config.BUTTON_LIGHT_COLOR, fg=config.BUTTON_LIGHT_TEXT_COLOR,
+            padx=8, pady=5
+        ).grid(row=3, column=0, padx=PAD, pady=(2, PAD), sticky="ew")
+
+        return c
+
+    # file status lines (safe)
+    try:
+        file_status_lines = _files_status_lines(app)
+    except Exception:
+        file_status_lines = ["No files yet"]
+
+    # ---------- build 4 compact cards ----------
+    _card(content, 0, key_icon,   
+          "Password",        
+          ["********"],             
+          "Edit Password",    
+          app.show_change_password_screen)
+    _card(content, 1, mic_icon,   
+          "Voice Biometrics", 
+          [f"Status: Enrolled"], 
+          "Edit Biometrics",   
+          app.show_password_screen_voice_entry1)
+    _card(content, 2, otp_icon,   
+          "OTP Settings",     
+          ["Account:", masked_email], 
+          "Edit Email",        
+          app.show_change_otp_settings_screen)
+    _card(content, 3, files_icon, 
+          "File Manager",     
+          file_status_lines,         
+          "Manage Files",
+          getattr(app, "show_file_settings_screen", app.show_manage_files_screen))
+
 
 def _files_status_lines(app):
     """Return ['No files yet'] or ['N files uploaded'] safely."""
