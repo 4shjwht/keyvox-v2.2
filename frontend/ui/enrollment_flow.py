@@ -106,9 +106,9 @@ def show_enrollment_status(app):
         tk.Label(details_frame, text=value_text, font=font_value, fg=COLOR_TEXT, bg=COLOR_CARD_BG)\
           .grid(row=i, column=1, sticky="w", padx=(15, 0), pady=2)
 
-    # --- Deactivate Button ---
-    def on_deactivate():
-        _deactivate_current_user(app)  # safe stub (no DB writes yet)
+    # # --- Deactivate Button ---
+    # def on_deactivate():
+    #     _deactivate_current_user(app)  # safe stub (no DB writes yet)
 
     deactivate_button = tk.Button(
         card,
@@ -126,34 +126,6 @@ def show_enrollment_status(app):
         command=lambda: app.show_home_screen()
     )
     deactivate_button.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(40, 0))
-
-
-# def _deactivate_current_user(app):
-#     """
-#     Stub: Confirmation + 'Not Implemented' notice.
-#     No changes to users.json, no logout, no navigation.
-#     Replace later with real logic when you're ready.
-#     """
-#     from tkinter import messagebox
-
-#     user = getattr(app, "currently_logged_in_user", None)
-#     who = ""
-#     if isinstance(user, dict):
-#         who = user.get("full_name") or user.get("username") or user.get("email") or ""
-#         who = f" ({who})" if who else ""
-
-#     proceed = messagebox.askyesno(
-#         "Confirm Deactivation",
-#         f"Are you sure you want to deactivate your account{who}?\n\n"
-#         "Note: Deactivation isn't available yet."
-#     )
-#     if not proceed:
-#         return
-
-#     messagebox.showinfo(
-#         "Not Implemented",
-#         "Deactivation is not available yet. No changes were made."
-#     )
 
 def show_enrollment_step1(app):
     """STEP 1: Account setup."""

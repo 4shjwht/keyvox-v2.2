@@ -1,124 +1,4 @@
 {
-    "julsss": {
-        "full_name": "Julian Justin P. Tan",
-        "email": "tanjj051@gmail.com",
-        "password_hash": "5e290af7a9ec9904720c20cc82e3789a6e85fe16b9b33ea4658c88ddb0116506",
-        "voiceprint_path": "D:\\0 vscode files\\keyvox\\backend\\voiceprints\\julsss.npy"
-    },
-    "justtt": {
-        "full_name": "Julian Justin PP. Tan",
-        "email": "jultan837@gmail.com",
-        "password_hash": "772502b6ebf690ab3a2e0215c8e759d783e68f137003e9bc59df072064f4218b",
-        "voiceprint_path": "D:\\0 vscode files\\keyvox\\backend\\voiceprints\\justtt.npy"
-    },
-    "ashhyy": {
-        "full_name": "Key Vox",
-        "email": "ash",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": null
-    },
-    "4sh": {
-        "full_name": "Key Vox",
-        "email": "ashjewel@gmail.com",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\4sh.npy"
-    },
-    "koy": {
-        "full_name": "Kurt ",
-        "email": "Koy@gmail.com",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\koy.npy"
-    },
-    "koyy": {
-        "full_name": "Kurty",
-        "email": "koooo",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": null
-    },
-    "koyyy": {
-        "full_name": "Kurtyy",
-        "email": "koooo",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\koyyy.npy"
-    },
-    "shley": {
-        "full_name": "Ashley Jewel Heart",
-        "email": "charlottemissy435@gmail.com",
-        "password_hash": "1dff2b17452f3c92790bb4e167ab2ad6f4845b1b62c20a871681d4c062deae18",
-        "voiceprint_path": "voiceprints\\shley.npy"
-    },
-    "user 1": {
-        "full_name": "user 1",
-        "email": "user 1",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\user 1.npy"
-    },
-    "user 2": {
-        "full_name": "user 2",
-        "email": "user 2",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\user 2.npy"
-    },
-    "ashqty": {
-        "full_name": "ashqty",
-        "email": "ash@gmail.com",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\ashqty.npy"
-    },
-    "ashqty1": {
-        "full_name": "ashqty",
-        "email": "ash@gmail.com",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\ashqty1.npy"
-    },
-    "ji": {
-        "full_name": "KeyVox",
-        "email": "ji",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\ji.npy"
-    },
-    "user 101": {
-        "full_name": "user 1",
-        "email": "user 1",
-        "password_hash": "b26a45e006b549e49e0a1afbaec961667af1e293fb409c2fb320d8b483d01f95",
-        "voiceprint_path": "voiceprints\\user 101.npy"
-    },
-    "nix": {
-        "full_name": "nix",
-        "email": "nix@gmail.com",
-        "password_hash": "e8aea23c7d84eec0c1611cc59891d3eab9c5d3a0cf374f9270a0951fd59eafb1",
-        "voiceprint_path": "voiceprints\\nix.npy"
-    },
-    "kage": {
-        "full_name": "dkncdjsbv",
-        "email": "ashjewelh@gmail.com",
-        "password_hash": "1dff2b17452f3c92790bb4e167ab2ad6f4845b1b62c20a871681d4c062deae18",
-        "voiceprint_path": "voiceprints\\kage.npy"
-    },
-    "enroll": {
-        "full_name": "asshhhhh",
-        "email": "ashjewelh@gmail.com",
-        "password_hash": "1dff2b17452f3c92790bb4e167ab2ad6f4845b1b62c20a871681d4c062deae18",
-        "voiceprint_path": "voiceprints\\enroll.npy"
-    },
-    "ashhh": {
-        "full_name": "weffreg",
-        "email": "ashjewelh@gmail.com",
-        "password_hash": "1dff2b17452f3c92790bb4e167ab2ad6f4845b1b62c20a871681d4c062deae18",
-        "voiceprint_path": "voiceprints\\ashhh.npy"
-    },
-    "ashhhh": {
-        "full_name": "isadklass",
-        "email": "ashjewelh@gmail.com",
-        "password_hash": "1dff2b17452f3c92790bb4e167ab2ad6f4845b1b62c20a871681d4c062deae18",
-        "voiceprint_path": "voiceprints\\ashhhh.npy"
-    },
-    "4shjwht": {
-        "full_name": "ashley jewel heart",
-        "email": "ashleyjewelheartlmalasa@gmail.com",
-        "password_hash": "9c91b6e025bfec8e5c14c191bbfac2f0981deecbbc95b742cda75b74b1b9646e",
-        "voiceprint_path": "voiceprints\\4shjwht.npy"
-    },
     "jc": {
         "full_name": "jc",
         "email": "jovanniecambalo@gmail.com",
@@ -131,8 +11,14 @@
         "password_hash": "1cccbbd7107b2e556e8763645a4e9c2773e353f1d75417bf222729bba07c26ba",
         "voiceprint_path": null
     },
-    "jewelh": {
-        "full_name": "ashley jewel heart",
+    "ash": {
+        "full_name": "ash jewel heart",
+        "email": "ashjewelh@gmail.com",
+        "password_hash": "e74a49911a9098fd7fc1686bce0d2431f84d476fd3fe1bdab0a2f6b63d52bf00",
+        "voiceprint_path": null
+    },
+    "jewel": {
+        "full_name": "ash jewel",
         "email": "ashjewelh@gmail.com",
         "password_hash": "e74a49911a9098fd7fc1686bce0d2431f84d476fd3fe1bdab0a2f6b63d52bf00",
         "voiceprint_path": null
