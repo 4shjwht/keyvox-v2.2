@@ -943,6 +943,7 @@ def show_manage_files_screen(app):
         bg="#F5F5F5", fg="black", relief="flat", padx=12, pady=6,
         command=on_open
     ).pack(side="left", padx=(10, 0))
+    print("open clicked")
 
     # --- Initial render ---
     _refresh_list()
